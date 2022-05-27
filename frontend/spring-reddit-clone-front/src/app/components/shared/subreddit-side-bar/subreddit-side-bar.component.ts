@@ -1,0 +1,29 @@
+import { SubredditModel } from './../../../service/subreddit/subreddit.response';
+import { SubredditService } from './../../../service/subreddit/subreddit.service';
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-subreddit-side-bar',
+  templateUrl: './subreddit-side-bar.component.html',
+  styleUrls: ['./subreddit-side-bar.component.css']
+})
+export class SubredditSideBarComponent implements OnInit {
+
+  subreddits: SubredditModel[] = [];
+  displayViewAll!: boolean;
+
+  constructor(private subredditService: SubredditService) { 
+    this.subredditService.getAllSubrddits().subscribe(data => {
+      if(data.length >= 4){
+        this.subreddits = data.splice(0,3);
+        this.displayViewAll = true;
+      } else{
+        this.subreddits = data;
+      }
+    });
+  }
+
+  ngOnInit(): void {
+  }
+
+}

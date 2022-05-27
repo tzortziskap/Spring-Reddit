@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  spring-reddit-clone-frontend:
+    image: spring-reddit-clone-frontend
+    depends_on: 
+      - spring-reddit-clone-backend
+    build: ./frontend/spring-reddit-clone-front
+    ports:
+      - "4201:4201"
+    volumes:
+       - ./frontend/spring-reddit-clone-front:/app
+       - /app/node_modules
+
+  spring-reddit-clone-backend: 
+    image: spring-reddit-clone-backend
+    networks:
+      - spring-reddit-clone-mysql
+    depends_on: 
+      mysqldb:
+        condition: service_healthy
+    build: ./backend/spring-reddit-clone
+    ports: 
+      - "8080:8080"
+    
+  mysqldb:
+    image: mysql:8
+    networks:
+      - spring-reddit-clone-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=2846
+      - MYSQL_DATABASE=spring-reddit-clone
+    healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+
+networks:
+  spring-reddit-clone-mysql:
